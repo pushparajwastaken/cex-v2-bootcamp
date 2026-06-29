@@ -16,4 +16,45 @@ model User {
   id       String @id @default(uuid())
   username String @unique
   password String
+
+  orders   Order[]
+  fills Fill[]
+}
+enum Status{
+  Filled
+  Completed
+  Open
+}
+model Order{
+id String @id @default(uuid())
+userId String 
+market String
+price Float
+qty Int
+type String
+side String
+filledQty Int
+status Status
+createdAT DateTime @default(now())
+user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+fills Fill[]
+}
+
+model Fill{
+id String @id @default(uuid())
+userId String
+qty Int
+side String
+type String
+price Float
+asset String
+originalOrderID String
+createdAT DateTime @default(now())
+user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+order Order @relation(fields:[originalOrderID],references:[id],onDelete:Cascade)
+}
+model Stocks{
+  id String @id @default(uuid())
+  name String
+  symbol String
 }
